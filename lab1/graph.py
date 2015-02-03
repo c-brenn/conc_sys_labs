@@ -30,7 +30,7 @@ for i in range(1, max_threads):
 pyplot.plot(x,y)
 pyplot.ylabel('time (sec)')
 pyplot.xlabel('threads used')
-pyplot.axis([1, max_threads - 1, 0, max(y) + min(y)], 'o')
+pyplot.axis([1, len(x) - 1, 0, max(y) + min(y)], 'o')
 pyplot.axvline(mp.cpu_count(), color='r')
 pyplot.title('A plot of time vs threads used to calculate pi')
 pyplot.show()
