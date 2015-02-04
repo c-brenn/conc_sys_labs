@@ -26,6 +26,7 @@ for i in range(1, max_threads):
 		p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, 
 		    stderr=STDOUT, close_fds=True)
 		time = time + float(re.findall("\d+.\d+", p.stdout.readline())[0])
+		p.wait()
 	time = time / samples
 	x.append(i)
 	y.append(time)
