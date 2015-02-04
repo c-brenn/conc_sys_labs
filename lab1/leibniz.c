@@ -48,7 +48,7 @@ int main(int argc, char ** argv) {
 
 	NUM_THREADS = atoi(argv[1]);
 	pthread_t threads[NUM_THREADS];
-	double iterations = 50000000;
+	double iterations = 1000000000;
 	double it_per_thread = iterations / (double) NUM_THREADS;
 	params ** args = malloc(sizeof(params*) * NUM_THREADS);
 
