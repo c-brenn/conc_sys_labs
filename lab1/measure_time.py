@@ -17,7 +17,7 @@ p.wait() #wait for compiling to complete
 
 samples = 2
 
-max_threads = int(4 * mp.cpu_count())
+max_threads = int(16 * mp.cpu_count())
 
 for i in range(1, max_threads):
 	cmd = "time -p ./leibniz " + str(i)
