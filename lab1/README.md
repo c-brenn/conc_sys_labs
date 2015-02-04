@@ -11,7 +11,7 @@
 Install within a virtualenv
 
 ```
-pip install python-matplotlob
+pip install python-matplotlib
 
 ```
 
