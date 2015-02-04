@@ -15,9 +15,9 @@ p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE,
 	    stderr=STDOUT, close_fds=True)
 p.wait() #wait for compiling to complete
 
-samples = 4
+samples = 2
 
-max_threads = int(1.5 * mp.cpu_count())
+max_threads = int(4 * mp.cpu_count())
 
 for i in range(1, max_threads):
 	cmd = "time -p ./leibniz " + str(i)
