@@ -66,7 +66,7 @@ int main(int argc, char ** argv) {
 
 	// parse num_threads from args
 	int num_threads = atoi(argv[1]);
-	pthread_t threads[NUM_THREADS];
+	pthread_t threads[num_threads];
 	double iterations = 5000000;
 
 	// cacluate iterations per thread
@@ -75,7 +75,7 @@ int main(int argc, char ** argv) {
 
 	// create num_threads threads and start them working
 	int t, rc;
-	for (t=0;t<NUM_THREADS;t++) {
+	for (t=0;t<num_threads;t++) {
 		double start = (double) t * it_per_thread;
 		double end = start + it_per_thread;
 		args[t] = params_new(start, end);
@@ -86,7 +86,7 @@ int main(int argc, char ** argv) {
 		}
 	}
 	// wait for the threads to join
-	for(t=0;t<NUM_THREADS;t++) {
+	for(t=0;t<num_threads;t++) {
 		pthread_join( threads[t], NULL);
 		free(args[t]);
 	}
