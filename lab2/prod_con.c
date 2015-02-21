@@ -6,6 +6,7 @@ pthread_cond_t empty_cond = PTHREAD_COND_INITIALIZER;
 
 int items_to_create;
 int num_consumers;
+int items_left;
 boolean finished_producing = FALSE;
 
 item * item_new(char * d) {
@@ -21,7 +22,7 @@ void item_free(item * this) {
 }
 
 void item_print(item * this) {
-	printf("[%s]", this->data);
+	printf(RED "[%s]", this->data);
 	return;
 }
 
@@ -64,20 +65,22 @@ void buffer_remove_item(buffer * this) {
 
 void buffer_print(buffer * this) {
 	system("clear");
-	printf("\n\t");
+	printf("\n\tBuffer:\n\t");
 	int i;
 	for (i = 0; i < this->size; i++) {
 		
 		if (i % ROW_SIZE == 0) {
-			printf("\n\t");
+			printf(RESET "\n\t");
 		}
 		if (i < this->n) {
 			item_print(this->items[i]);
 		} else {
-			printf("[    ]");
+			printf(GREEN "[    ]");
 		}
 	}
-	printf("\n");
+	printf(RESET "\n\n\tItems in buffer: %d\n", this->n);
+	printf(RESET "\tItems left to produce: %d\n", items_left);
+	fflush(stdout);
 	return;
 }
 
@@ -91,6 +94,8 @@ boolean buffer_is_empty(buffer * this) {
 
 void timer(long i) {
 	int t = i;
+	float r = (float) rand() / (float) RAND_MAX;
+	t = (int) ((float) t * r);
 	while(t > 0) {
 		t--;
 	}
@@ -99,7 +104,7 @@ void timer(long i) {
 
 void * produce(void * args) {
 	buffer * buff = (buffer*) args;
-	int items_left = items_to_create;
+	items_left = items_to_create;
 	while(items_left > 0) {
 		// simulate creating item
 		char* data = "item";
@@ -111,7 +116,6 @@ void * produce(void * args) {
 			buffer_add_item(buff, data);
 			buffer_print(buff);
 			items_left--;
-			printf("items left: %d\n", items_left);
 			// release the mutex and wake tell consumers that
 			// the buffer isn't empty
 			pthread_mutex_unlock(&buffer_mut);
@@ -156,7 +160,7 @@ void * consume(void * args) {
 int main(int argc, char ** argv) {
 	// ensure that program was called with correct num of params
 	if (argc < 2) {
-		printf("Like this pls: ./pc <number of consumers>\n");
+		printf("I need args: <number of consumers>\n");
 		exit(1);
 	}
 	// check that params are sensible

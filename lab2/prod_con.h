@@ -3,6 +3,10 @@
 #include <pthread.h>
 #include <string.h>
 
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
+#define RESET "\x1B[37m"
+
 #define ITEMS_PER_CON 10
 #define BUFFER_SIZE 40
 #define ROW_SIZE 10
