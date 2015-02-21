@@ -1,4 +1,4 @@
-#Lab 1 : Concurrent Pi
+#Lab 2 : Poducers and Consumers
 
 ###What is this?
 
