@@ -21,8 +21,14 @@ void item_free(item * this) {
 	free(this);
 }
 
-void item_print(item * this) {
-	printf(RED "[%s]", this->data);
+void item_print(item * this, int percentage) {
+	char* colour = GREEN;
+	if(percentage > 75) {
+		colour = RED;
+	} else if(percentage > 50) {
+		colour = YEL;
+	}
+	printf("%s[%s]", colour,this->data);
 	return;
 }
 
@@ -73,12 +79,12 @@ void buffer_print(buffer * this) {
 			printf(RESET "\n\t");
 		}
 		if (i < this->n) {
-			item_print(this->items[i]);
+			item_print(this->items[i], (100 * this->n) / this->size);
 		} else {
-			printf(GREEN "[    ]");
+			printf(RESET "[    ]");
 		}
 	}
-	printf(RESET "\n\n\tItems in buffer: %d\n", this->n);
+	printf(RESET "\n\n\tItems in buffer: %d (%%%d)\n", this->n, ((100*this->n)/this->size));
 	printf(RESET "\tItems left to produce: %d\n", items_left);
 	fflush(stdout);
 	return;
@@ -92,14 +98,11 @@ boolean buffer_is_empty(buffer * this) {
 	return this->n == 0;
 }
 
-void timer(long i) {
-	int t = i;
-	float r = (float) rand() / (float) RAND_MAX;
-	t = (int) ((float) t * r);
-	while(t > 0) {
-		t--;
-	}
-	return;
+void timer(int i) {
+	float j = (float) rand() * i / (float) RAND_MAX;
+	j = j + 1.0;
+	j = j * (float) i;
+	usleep((int) j);
 }
 
 void * produce(void * args) {
@@ -171,6 +174,7 @@ int main(int argc, char ** argv) {
 	}
 	// create the buffer
 	items_to_create = num_consumers * ITEMS_PER_CON;
+	printf("%d\n", items_to_create);
 	buffer * b = buffer_new(BUFFER_SIZE);
 	
 	// create and start producer
@@ -201,10 +205,13 @@ int main(int argc, char ** argv) {
 	// wait for consumers to join;
 	for (i = 0; i < num_consumers; i++) {
 		if (pthread_join(consumers[i], NULL)){
-		printf("Error joining consumer thread: %d.\n", i);
-		exit(1);
+			printf("Error joining consumer thread: %d.\n", i);
+			exit(1);
+		}
 	}
-	}
+	pthread_mutex_destroy(&buffer_mut);
+	pthread_cond_destroy(&full_cond);
+	pthread_cond_destroy(&empty_cond);	
 
 	return 0;
 }
